@@ -47,5 +47,11 @@ export const deletePackSize = async (size: number) => {
     if (!response.ok) {
         throw new Error("Failed to delete pack size");
     }
-    return response.json();
+    // If the response is 204 (No Content), simply return null
+    if (response.status === 204) {
+        return null;
+    }
+    // Otherwise, if there's any content, try to parse it
+    const text = await response.text();
+    return text ? JSON.parse(text) : null;
 };

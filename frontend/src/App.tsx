@@ -84,11 +84,14 @@ const App = () => {
                     <PackSizeItem
                         key={size}
                         size={size}
-                        onDelete={(deletedSize) =>
-                            setPackSizes((prev) =>
-                                prev.filter((s) => s !== deletedSize)
-                            )
-                        }
+                        onDelete={(deletedSize) => {
+                            console.log("Before deletion:", packSizes);
+                            setPackSizes((prev) => {
+                                const updated = prev.filter((s) => s !== deletedSize);
+                                console.log("After deletion:", updated);
+                                return updated;
+                            });
+                        }}
                     />
                 ))}
             </div>
