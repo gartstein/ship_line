@@ -6,6 +6,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"os"
 	"ship_line/services"
 	"time"
 )
@@ -20,11 +21,15 @@ type Handler struct {
 // SetupRouter creates and configures the Gin router, setting up CORS policies and route handlers.
 // It returns a Handler that encapsulates the router and associated pack service.
 func SetupRouter(ps *services.PackService) *Handler {
+	allowOrigins := os.Getenv("ALLOW_ORIGINS")
+	if allowOrigins == "" {
+		allowOrigins = "http://localhost:3000"
+	}
 	router := gin.Default()
 	// Configure CORS to allow requests from specific origins and methods.
 	router.Use(cors.New(cors.Config{
 		// TODO: move to config
-		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowOrigins:     []string{allowOrigins},
 		AllowMethods:     []string{http.MethodGet, http.MethodPut, http.MethodOptions, http.MethodPost, http.MethodDelete},
 		AllowHeaders:     []string{"Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},
