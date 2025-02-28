@@ -56,7 +56,7 @@ After you have built and started the application (e.g., using `make run-docker`)
 
 - **Frontend:**  
   The React frontend is served through an Nginx container. Open your browser and go to:  
-  [http://localhost](http://localhost:3000)
+  [http://localhost;3000](http://localhost:3000)
 
 - **Backend:**  
   The Go backend runs on port 8080. You can access its API endpoints directly. For example, to fetch pack sizes, visit:  
