@@ -1,47 +1,39 @@
-// src/api.ts
-const API_BASE_URL = "http://localhost:8080/v1";
+// Set the API base URL from an environment variable.
+// When using Create React App, env vars must be prefixed with REACT_APP_.
+// Fallback to "http://localhost:8080/v1" if the env variable is not set.
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8080/v1";
 
-// ✅ Fetch pack sizes as an array
 export const fetchPackSizes = async () => {
     const response = await fetch(`${API_BASE_URL}/pack-sizes`);
     if (!response.ok) throw new Error(`Error ${response.status}: Failed to fetch pack sizes.`);
-
     const data = await response.json();
-    return { pack_sizes: Array.isArray(data.pack_sizes) ? data.pack_sizes : [] }; // Ensure it's an array
+    return { pack_sizes: Array.isArray(data.pack_sizes) ? data.pack_sizes : [] };
 };
 
-// ✅ Send pack sizes as a JSON array with key `pack_sizes`
 export const updatePackSizes = async (packSizes: number[]) => {
     const response = await fetch(`${API_BASE_URL}/pack-sizes`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pack_sizes: packSizes }), // ✅ Use `pack_sizes`
+        body: JSON.stringify({ pack_sizes: packSizes }),
     });
-
     if (!response.ok) throw new Error(`Error ${response.status}: Failed to update pack sizes.`);
     return response.json();
 };
 
-// ✅ Use correct API endpoint for pack calculation
 export const calculatePacks = async (items: number) => {
     const response = await fetch(`${API_BASE_URL}/calc?items=${items}`);
-
     if (!response.ok) {
         throw new Error(`Error ${response.status}: Failed to calculate pack sizes.`);
     }
-
     const data = await response.json();
-
-    // ✅ Convert `packsUsed` object into an array [{ pack: 5000, count: 6 }]
     const formattedResult = Object.entries(data.packsUsed).map(([pack, count]) => ({
         pack: parseInt(pack, 10),
         count: count as number,
     }));
-
     return {
         itemsOrdered: data.itemsOrdered,
         totalItemsUsed: data.totalItemsUsed,
-        result: formattedResult, // ✅ Ensure result is an array
+        result: formattedResult,
     };
 };
 
