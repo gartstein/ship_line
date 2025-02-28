@@ -49,3 +49,17 @@ By having both implementations, the project handles orders of varying sizes effi
    ```bash
    git clone git@github.com:gartstein/ship_line.git
    cd ship_line
+
+## Accessing the Website Locally
+
+After you have built and started the application (e.g., using `make run-docker`), you can access the two main parts of the project locally:
+
+- **Frontend:**  
+  The React frontend is served through an Nginx container. Open your browser and go to:  
+  [http://localhost](http://localhost:3000)
+
+- **Backend:**  
+  The Go backend runs on port 8080. You can access its API endpoints directly. For example, to fetch pack sizes, visit:  
+  [http://localhost:8080/v1/pack-sizes](http://localhost:8080/v1/pack-sizes)
+
+If you prefer to run the frontend or backend separately (without Docker), use the corresponding Makefile targets to build and run them on their respective ports.
