@@ -1,0 +1,160 @@
+openapi: 3.0.0
+info:
+  title: Ship Line API
+  version: "1.0.0"
+  description: >
+    API for managing and calculating pack sizes in the Ship Line application.
+    This API allows clients to calculate the optimal pack distribution based
+    on an order size, retrieve the current pack sizes, and update pack sizes.
+servers:
+  - url: http://localhost:8080
+paths:
+  /v1/calc:
+    get:
+      summary: Calculate Pack Distribution
+      description: >
+        Calculates the optimal pack distribution for a given order size.
+        The query parameter "items" must be provided as a positive integer.
+      parameters:
+        - in: query
+          name: items
+          description: Number of items ordered.
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+      responses:
+        '200':
+          description: Successful calculation of pack distribution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalcResult'
+        '400':
+          description: Invalid input provided (e.g. missing or non-numeric items).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/pack-sizes:
+    get:
+      summary: Get Pack Sizes
+      description: Retrieves the currently configured pack sizes.
+      responses:
+        '200':
+          description: A list of pack sizes.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pack_sizes:
+                    type: array
+                    items:
+                      type: integer
+                    example: [250, 500, 1000, 2000, 5000]
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      summary: Update Pack Sizes
+      description: >
+        Updates the configured pack sizes. The JSON payload must contain an array of
+        positive integers. Zero values are rejected.
+      requestBody:
+        description: JSON payload containing new pack sizes.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PackSizesPayload'
+      responses:
+        '200':
+          description: Pack sizes updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  pack_sizes:
+                    type: array
+                    items:
+                      type: integer
+                    example: [300, 600, 1200]
+        '400':
+          description: Invalid input, such as empty array, zero, or negative values.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /pack-sizes/{size}:
+    delete:
+      summary: Delete a specific pack size
+      description: Removes a pack size from the storage.
+      parameters:
+        - name: size
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Pack size deleted successfully
+        400:
+          description: Invalid pack size
+        500:
+          description: Internal server error
+components:
+  schemas:
+    CalcResult:
+      type: object
+      properties:
+        itemsOrdered:
+          type: integer
+          example: 10
+        totalItemsUsed:
+          type: integer
+          example: 750
+        packsUsed:
+          type: object
+          additionalProperties:
+            type: integer
+          example:
+            "250": 1
+            "500": 1
+    PackSizesPayload:
+      type: object
+      properties:
+        pack_sizes:
+          type: array
+          items:
+            type: integer
+          description: >
+            An array of positive integers representing pack sizes. Zero or negative values are not allowed.
+          example: [250, 500, 1000]
+      required:
+        - pack_sizes
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Invalid input data.
