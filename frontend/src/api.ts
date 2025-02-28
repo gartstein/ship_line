@@ -6,8 +6,9 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:808
 export const fetchPackSizes = async () => {
     const response = await fetch(`${API_BASE_URL}/pack-sizes`);
     if (!response.ok) throw new Error(`Error ${response.status}: Failed to fetch pack sizes.`);
+
     const data = await response.json();
-    return { pack_sizes: Array.isArray(data.pack_sizes) ? data.pack_sizes : [] };
+    return { pack_sizes: Array.isArray(data.pack_sizes) ? data.pack_sizes : [] }; // Ensure it's an array
 };
 
 export const updatePackSizes = async (packSizes: number[]) => {
@@ -16,6 +17,7 @@ export const updatePackSizes = async (packSizes: number[]) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pack_sizes: packSizes }),
     });
+
     if (!response.ok) throw new Error(`Error ${response.status}: Failed to update pack sizes.`);
     return response.json();
 };
@@ -30,6 +32,7 @@ export const calculatePacks = async (items: number) => {
         pack: parseInt(pack, 10),
         count: count as number,
     }));
+
     return {
         itemsOrdered: data.itemsOrdered,
         totalItemsUsed: data.totalItemsUsed,
