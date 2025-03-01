@@ -40,8 +40,7 @@ By having both implementations, the project handles orders of varying sizes effi
 - **`build-docker`**: Builds Docker images for the backend and frontend
 - **`run-docker`**: Starts Docker containers via Docker Compose
 - **`stop-docker`**: Stops Docker Compose services
-- **`push-docker`**: Pushes Docker images to a registry
-- **`deploy-gke`**: Deploys the application to Google Kubernetes Engine
+
 
 ## Getting Started
 
